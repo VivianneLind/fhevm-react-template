@@ -66,7 +66,6 @@ const decrypted = await decryptOutput(fhevm, ciphertext, contractAddress);
 
 - [Installation](#installation)
 - [Quick Start](#quick-start)
-- [Video Demo](#-video-demo)
 - [Core Concepts](#core-concepts)
 - [API Reference](#api-reference)
 - [Framework Integration](#framework-integration)
