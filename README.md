@@ -445,7 +445,7 @@ A comprehensive video demonstration showcasing:
 
 ## 🚀 Live Demos
 
-- **Housing Assessment**: [https://housing-assessment-demo.vercel.app](https://housing-assessment-demo.vercel.app)
+- **Housing Assessment**: [https://housing-quality-assessment.vercel.app/](https://housing-quality-assessment.vercel.app/)
 - **Token Transfer**: [https://token-demo.vercel.app](https://token-demo.vercel.app)
 
 ---
@@ -553,7 +553,7 @@ MIT License - see [LICENSE](./LICENSE) file for details.
 
 ## 📞 Support
 
-- **GitHub Issues**: [Report bugs or request features](https://github.com/your-username/fhevm-react-template/issues)
+- **GitHub Issues**: [Report bugs or request features](https://github.com/VivianneLind/fhevm-react-template/issues)
 - **Discord**: [Join our community](https://discord.gg/zama)
 - **Documentation**: [Read the docs](./docs)
 
