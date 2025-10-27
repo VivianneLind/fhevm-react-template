@@ -353,66 +353,224 @@ React hook for decrypting values.
 
 ## 🎯 Examples
 
-### Example 1: Privacy-Preserving Voting
+This repository includes several complete, production-ready examples demonstrating different use cases:
+
+### 🚀 Interactive Demo
+
+**Location:** `examples/nextjs-demo/`
+
+A comprehensive, interactive demonstration showcasing all SDK features with full Next.js App Router structure:
+- **Complete FHE Implementation** - Encryption, decryption, and homomorphic computation demos
+- **Real-World Use Cases** - Banking and medical record examples
+- **API Routes** - Server-side FHE operations with dedicated endpoints
+- **Custom Components** - Reusable UI components (Button, Input, Card)
+- **FHE Provider** - React context for SDK state management
+- **Key Management** - Public key fetching and refresh functionality
+- **Type Safety** - Full TypeScript support with comprehensive type definitions
+- **Custom Hooks** - useFHE, useEncryption, useComputation for simplified integration
+- **Responsive UI** - Beautiful, modern interface with Tailwind CSS
+
+**Features Included:**
+```
+src/
+├── app/                        # Next.js App Router
+│   ├── api/                    # API routes
+│   │   ├── fhe/                # FHE operations
+│   │   │   ├── route.ts        # Main FHE endpoint
+│   │   │   ├── encrypt/route.ts
+│   │   │   ├── decrypt/route.ts
+│   │   │   └── compute/route.ts
+│   │   └── keys/route.ts       # Key management
+│   ├── layout.tsx
+│   ├── page.tsx
+│   └── globals.css
+├── components/                 # React components
+│   ├── ui/                     # Base UI (Button, Input, Card)
+│   ├── fhe/                    # FHE components
+│   │   ├── FHEProvider.tsx
+│   │   ├── EncryptionDemo.tsx
+│   │   ├── ComputationDemo.tsx
+│   │   └── KeyManager.tsx
+│   └── examples/               # Real-world examples
+│       ├── BankingExample.tsx
+│       └── MedicalExample.tsx
+├── lib/                        # Utilities
+│   ├── fhe/                    # FHE integration
+│   │   ├── client.ts
+│   │   ├── server.ts
+│   │   ├── keys.ts
+│   │   └── types.ts
+│   └── utils/                  # Helpers
+│       ├── security.ts
+│       └── validation.ts
+├── hooks/                      # Custom hooks
+│   ├── useFHE.ts
+│   ├── useEncryption.ts
+│   └── useComputation.ts
+└── types/                      # TypeScript types
+    ├── fhe.ts
+    └── api.ts
+```
+
+**Quick start:**
+```bash
+cd examples/nextjs-demo
+npm install
+npm run dev
+```
+
+Visit [http://localhost:3001](http://localhost:3001)
+
+---
+
+### 🏘️ Housing Quality Assessment Examples
+
+#### 1. Next.js Housing Assessment
+**Location:** `examples/nextjs-housing-assessment/`
+
+Privacy-preserving housing quality assessment system:
+- Encrypted quality scores
+- Authorized assessor management
+- Selective disclosure to property owners
+- Smart contract integration
+
+#### 2. Privacy Housing Assessment
+**Location:** `examples/privacy-housing-assessment/`
+
+React-based privacy-preserving assessment platform:
+- Transaction history tracking
+- Real-time assessment submission
+- Decentralized assessor management
+- Full TypeScript support
+
+#### 3. Anonymous Housing Quality Assessment
+**Location:** `examples/AnonymousHousingQualityAssessment/`
+
+Modern React application for anonymous assessment submissions:
+- **React + TypeScript** - Modern component-based architecture
+- **Complete anonymity** - Privacy-preserving assessor system
+- **Encrypted score storage** - FHE-based data protection
+- **Public verification** - Transparent without revealing sensitive data
+- **SDK integration** - Full FHEVM SDK integration
+- **Responsive UI** - Tailwind CSS with glass morphism design
+
+---
+
+### 📋 Code Examples
+
+#### Example 1: Basic Encryption
 
 ```typescript
 import { createFhevmInstance, encryptInput } from '@fhevm/sdk';
 
-async function submitVote(candidate: number) {
+async function encryptValue(value: number) {
   const fhevm = await createFhevmInstance({
     chainId: 11155111,
     network: 'sepolia'
   });
 
-  // Encrypt the vote
-  const encryptedVote = await encryptInput(fhevm, candidate, 'uint8');
-
-  // Submit to contract
-  await votingContract.vote(encryptedVote);
+  const encrypted = await encryptInput(fhevm, value, 'uint32');
+  return encrypted;
 }
 ```
 
-### Example 2: Confidential Token Transfer
+#### Example 2: React Hook Usage
 
 ```typescript
-import { encryptInput } from '@fhevm/sdk';
+import { useFhevm, useEncrypt } from '@fhevm/sdk/react';
 
-async function transferTokens(to: string, amount: number) {
-  const encrypted = await encryptInput(fhevm, amount, 'uint64');
-  await tokenContract.confidentialTransfer(to, encrypted);
+function MyComponent() {
+  const { fhevm, isReady } = useFhevm({
+    chainId: 11155111,
+    network: 'sepolia'
+  });
+
+  const { encrypt, isEncrypting } = useEncrypt(fhevm);
+
+  const handleSubmit = async (value: number) => {
+    const encrypted = await encrypt(value, 'uint32');
+    await contract.submitValue(encrypted);
+  };
+
+  return (
+    <button onClick={() => handleSubmit(42)} disabled={!isReady}>
+      {isEncrypting ? 'Encrypting...' : 'Submit'}
+    </button>
+  );
 }
 ```
 
-### Example 3: Housing Quality Assessment
+#### Example 3: Confidential Token Transfer
 
-See our complete example: [Housing Quality Assessment](./examples/nextjs-housing-assessment)
+```typescript
+import { useEncrypt } from '@fhevm/sdk/react';
 
-This example demonstrates:
-- ✅ Encrypted quality scores
-- ✅ Privacy-preserving assessments
-- ✅ Selective disclosure
-- ✅ Real-world use case
+async function transferTokens(fhevm: any, to: string, amount: number) {
+  const { encrypt } = useEncrypt(fhevm);
+  const encryptedAmount = await encrypt(amount, 'uint64');
+  await tokenContract.confidentialTransfer(to, encryptedAmount);
+}
+```
 
 ---
 
-## 📦 Package Structure
+## 📦 Repository Structure
 
 ```
-@fhevm/sdk/
-├── core/              # Core SDK functionality
-│   ├── client.ts      # FHEVM instance management
-│   ├── encryption.ts  # Encryption utilities
-│   ├── decryption.ts  # Decryption utilities
-│   └── types.ts       # TypeScript types
-├── react/             # React-specific hooks
-│   ├── useFhevm.ts
-│   ├── useEncrypt.ts
-│   └── useDecrypt.ts
-├── utils/             # Helper utilities
-│   ├── helpers.ts
-│   └── validation.ts
-└── config/            # Configuration
-    └── networks.ts    # Network configurations
+fhevm-react-template/
+├── packages/
+│   └── fhevm-sdk/                 # Core SDK package
+│       ├── src/
+│       │   ├── core/              # Core functionality
+│       │   │   ├── client.ts      # FHEVM instance management
+│       │   │   ├── encryption.ts  # Encryption utilities
+│       │   │   ├── decryption.ts  # Decryption utilities
+│       │   │   └── types.ts       # TypeScript types
+│       │   ├── react/             # React-specific hooks
+│       │   │   ├── useFhevm.ts
+│       │   │   ├── useEncrypt.ts
+│       │   │   └── useDecrypt.ts
+│       │   ├── utils/             # Helper utilities
+│       │   │   └── validation.ts
+│       │   ├── config/            # Configuration
+│       │   │   └── networks.ts
+│       │   └── index.ts           # Main entry point
+│       ├── package.json
+│       ├── README.md
+│       └── tsconfig.json
+│
+├── templates/                     # Framework templates
+│   └── nextjs/                   # Complete Next.js template
+│       ├── src/
+│       │   ├── app/              # Next.js App Router
+│       │   │   ├── api/          # API routes for FHE operations
+│       │   │   ├── layout.tsx
+│       │   │   ├── page.tsx
+│       │   │   └── globals.css
+│       │   ├── components/       # React components
+│       │   │   ├── ui/           # Base UI components
+│       │   │   ├── fhe/          # FHE-specific components
+│       │   │   └── examples/     # Use case examples
+│       │   ├── lib/              # Utility libraries
+│       │   │   ├── fhe/          # FHE integration
+│       │   │   └── utils/        # Helper functions
+│       │   ├── hooks/            # Custom React hooks
+│       │   └── types/            # TypeScript definitions
+│       ├── package.json
+│       └── README.md
+│
+├── examples/                     # Live examples
+│   ├── nextjs-demo/             # Interactive Next.js demo
+│   ├── nextjs-housing-assessment/  # Next.js housing assessment
+│   ├── privacy-housing-assessment/  # React privacy assessment
+│   └── AnonymousHousingQualityAssessment/  # React anonymous assessment
+│
+├── docs/                        # Documentation
+│   ├── getting-started.md
+│   ├── api-reference.md
+│   └── react-integration.md
+│
+└── README.md                    # This file
 ```
 
 ---
@@ -461,14 +619,59 @@ A comprehensive video demonstration showcasing:
 
 ---
 
+## 🚀 Getting Started with Templates
+
+This repository includes production-ready templates to kickstart your FHEVM project:
+
+### Next.js Template
+
+**Location:** `templates/nextjs/`
+
+A complete Next.js application template with:
+- ✅ Full SDK integration
+- ✅ API routes for server-side FHE operations
+- ✅ Pre-built UI components
+- ✅ Example implementations
+- ✅ TypeScript configuration
+- ✅ Tailwind CSS styling
+
+**Use this template:**
+
+```bash
+# Copy the template to your project directory
+cp -r templates/nextjs my-fhevm-app
+cd my-fhevm-app
+
+# Install dependencies
+npm install
+
+# Update the SDK reference in package.json to use the published version
+# Replace: "@fhevm/sdk": "workspace:*"
+# With: "@fhevm/sdk": "^1.0.0"
+
+# Run the development server
+npm run dev
+```
+
+The template includes:
+- **App Router structure** - Modern Next.js 14+ setup
+- **FHE components** - Ready-to-use encryption/decryption components
+- **API routes** - Server-side FHE operation handlers
+- **Custom hooks** - Simplified SDK integration
+- **Example use cases** - Banking and medical record examples
+
+---
+
 ## 🛠️ Development
+
+### Setting up the Repository
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/fhevm-react-template.git
+git clone https://github.com/VivianneLind/fhevm-react-template.git
 cd fhevm-react-template
 
-# Install dependencies
+# Install dependencies (monorepo)
 npm install
 
 # Build SDK
@@ -476,7 +679,43 @@ cd packages/fhevm-sdk
 npm run build
 
 # Run examples
-cd ../../examples/nextjs-housing-assessment
+cd ../../examples/nextjs-demo
+npm install
+npm run dev
+```
+
+### Working with the SDK
+
+```bash
+# Navigate to SDK package
+cd packages/fhevm-sdk
+
+# Build
+npm run build
+
+# Run tests (if available)
+npm test
+
+# Link for local development
+npm link
+```
+
+### Running Examples
+
+```bash
+# Next.js Demo
+cd examples/nextjs-demo
+npm install
+npm run dev  # Opens on http://localhost:3001
+
+# Housing Assessment
+cd examples/nextjs-housing-assessment
+npm install
+npm run dev  # Opens on http://localhost:3000
+
+# Privacy Assessment
+cd examples/privacy-housing-assessment
+npm install
 npm run dev
 ```
 
