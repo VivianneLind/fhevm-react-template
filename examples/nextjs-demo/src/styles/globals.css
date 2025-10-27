@@ -1,0 +1,5 @@
+/* This file exists to match the structure from next.md */
+/* The actual global styles are in src/app/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
